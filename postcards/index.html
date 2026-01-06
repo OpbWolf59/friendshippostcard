@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friend Qualities Postcards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #d4516f;
+            --accent-coral: #ff6b6b;
+            --accent-rose: #ff69b4;
+            --accent-pink: #ffb3d9;
+            --accent-peach: #ffcc99;
+            --accent-teal: #7dd3c0;
+            --accent-purple: #b19cd9;
+            --accent-orange: #ffa366;
+            --accent-blue: #66b3ff;
+            --postcard-peach: #ffe8cc;
+            --postcard-mint: #ccf5e5;
+            --postcard-lavender: #e6d9f5;
+            --postcard-yellow: #fffbcc;
+            --postcard-rose: #ffd9e8;
+            --postcard-sky: #d9f0ff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f9d9e8 0%, #e6d9f5 50%, #d9f0ff 100%);
+            min-height: 100vh;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .screen {
+            display: none;
+            width: 100%;
+            max-width: 90rem;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* Center alignment for all screens */
+        #intro {
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        #message {
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        #postcards {
+            flex-direction: column;
+            padding: 3rem 1.5rem;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        /* Typewriter animation for all text elements */
+        @keyframes typewriter {
+            from {
+                width: 0;
+            }
+            to {
+                width: 100%;
+            }
+        }
+
+        @keyframes blink {
+            50% {
+                border-right-color: transparent;
+            }
+        }
+
+        .typewriter {
+            display: inline-block;
+            overflow: hidden;
+            border-right: 3px solid var(--primary);
+            animation: typewriter var(--duration, 2s) steps(var(--chars, 40), end) 1 forwards, blink 0.75s step-end 1s infinite;
+            white-space: nowrap;
+            width: 100%;
+        }
+
+        /* Top-to-bottom loading animations */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .intro-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            max-width: 28rem;
+            width: 100%;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        .rabbit-box {
+            position: relative;
+            width: 16rem;
+            height: 16rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        .mailbox {
+            position: absolute;
+            bottom: -1rem;
+            right: 1rem;
+            width: 5rem;
+            height: 4rem;
+            background: var(--accent-rose);
+            border-radius: 0.5rem;
+            border: 4px solid var(--accent-pink);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: pointer;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .mailbox:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .intro-title {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--primary);
+            margin-top: 1rem;
+            animation: slideDown 0.8s ease-out 0.2s both;
+        }
+
+        /* Personal Message Screen */
+        .message-container {
+            max-width: 48rem;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        .message-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            padding: 3rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 4px solid rgba(255, 107, 180, 0.2);
+            animation: slideDown 0.6s ease-out;
+            text-align: center;
+        }
+
+        .message-name {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            text-align: center;
+            min-height: 2.5rem;
+        }
+
+        .message-text {
+            font-size: 1.125rem;
+            color: rgba(212, 81, 111, 0.8);
+            line-height: 1.6;
+            text-align: center;
+            min-height: 4rem;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            align-items: center;
+            animation: slideDown 0.8s ease-out 0.2s both;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--accent-coral);
+            color: white;
+            padding: 1rem 2rem;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--primary);
+            font-size: 0.95rem;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Postcards Screen */
+        .postcards-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: slideDown 0.6s ease-out;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .postcards-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .postcards-subtitle {
+            color: rgba(212, 81, 111, 0.6);
+            font-weight: 500;
+            text-align: center;
+            animation: slideDown 0.8s ease-out 0.2s both;
+        }
+
+        .postcards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            max-width: 70rem;
+            margin: 0 auto 3rem;
+            width: 100%;
+            justify-items: center;
+        }
+
+        /* Adjusted postcard size for 2x3 grid */
+        .postcard {
+            height: 18rem;
+            width: 100%;
+            max-width: 22rem;
+            cursor: pointer;
+            perspective: 1000px;
+            animation: fadeInPostcard 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeInPostcard {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .postcard:nth-child(1) { animation-delay: 0s; }
+        .postcard:nth-child(2) { animation-delay: 0.1s; }
+        .postcard:nth-child(3) { animation-delay: 0.2s; }
+        .postcard:nth-child(4) { animation-delay: 0.3s; }
+        .postcard:nth-child(5) { animation-delay: 0.4s; }
+        .postcard:nth-child(6) { animation-delay: 0.5s; }
+
+        .postcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.5s;
+            transform-style: preserve-3d;
+        }
+
+        .postcard.flipped .postcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .postcard-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1rem;
+            border: 4px solid;
+            padding: 1.5rem;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .postcard-front {
+            background: var(--postcard-peach);
+            border-color: var(--accent-coral);
+        }
+
+        .postcard.card-1 .postcard-front { background: var(--postcard-peach); border-color: var(--accent-coral); }
+        .postcard.card-2 .postcard-front { background: var(--postcard-mint); border-color: var(--accent-teal); }
+        .postcard.card-3 .postcard-front { background: var(--postcard-lavender); border-color: var(--accent-purple); }
+        .postcard.card-4 .postcard-front { background: var(--postcard-yellow); border-color: var(--accent-orange); }
+        .postcard.card-5 .postcard-front { background: var(--postcard-rose); border-color: var(--accent-pink); }
+        .postcard.card-6 .postcard-front { background: var(--postcard-sky); border-color: var(--accent-blue); }
+
+        .postcard-back {
+            background: var(--postcard-peach);
+            border-color: var(--accent-coral);
+            transform: rotateY(180deg);
+        }
+
+        .postcard.card-1 .postcard-back { background: var(--postcard-peach); border-color: var(--accent-coral); }
+        .postcard.card-2 .postcard-back { background: var(--postcard-mint); border-color: var(--accent-teal); }
+        .postcard.card-3 .postcard-back { background: var(--postcard-lavender); border-color: var(--accent-purple); }
+        .postcard.card-4 .postcard-back { background: var(--postcard-yellow); border-color: var(--accent-orange); }
+        .postcard.card-5 .postcard-back { background: var(--postcard-rose); border-color: var(--accent-pink); }
+        .postcard.card-6 .postcard-back { background: var(--postcard-sky); border-color: var(--accent-blue); }
+
+        .postcard-emoji {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .postcard-quality {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+        }
+
+        .postcard-stamp {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            font-size: 1.25rem;
+            opacity: 0.5;
+        }
+
+        .postcard-message {
+            font-size: 0.95rem;
+            color: var(--primary);
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .postcard-stamp-back {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            font-size: 1.25rem;
+            opacity: 0.3;
+        }
+
+        /* Ensure buttons are centered */
+        .postcards-buttons {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            animation: slideDown 1s ease-out 0.4s both;
+        }
+
+        @media (max-width: 768px) {
+            .postcards-grid {
+                grid-template-columns: repeat(2, 1fr);
+                max-width: 40rem;
+            }
+
+            .postcards-title {
+                font-size: 1.75rem;
+            }
+
+            .message-card {
+                padding: 1.5rem;
+            }
+
+            .intro-title {
+                font-size: 1.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .postcards-grid {
+                grid-template-columns: 1fr;
+                max-width: 25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- INTRO SCREEN -->
+    <div id="intro" class="screen active">
+        <div class="intro-container">
+            <div class="rabbit-box">
+                <svg width="280" height="280" viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Left Ear -->
+                    <ellipse cx="90" cy="50" rx="18" ry="60" fill="#fcc5a3" stroke="#d4516f" stroke-width="2"/>
+                    <ellipse cx="90" cy="60" rx="10" ry="40" fill="#ffb3d9" opacity="0.6"/>
+                    
+                    <!-- Right Ear -->
+                    <ellipse cx="190" cy="50" rx="18" ry="60" fill="#fcc5a3" stroke="#d4516f" stroke-width="2"/>
+                    <ellipse cx="190" cy="60" rx="10" ry="40" fill="#ffb3d9" opacity="0.6"/>
+                    
+                    <!-- Head -->
+                    <circle cx="140" cy="130" r="70" fill="#fcc5a3" stroke="#d4516f" stroke-width="2"/>
+                    
+                    <!-- Snout -->
+                    <circle cx="140" cy="155" r="40" fill="#ffdbbc"/>
+                    
+                    <!-- Eyes -->
+                    <circle cx="120" cy="110" r="8" fill="#d4516f"/>
+                    <circle cx="160" cy="110" r="8" fill="#d4516f"/>
+                    <circle cx="122" cy="108" r="3" fill="white"/>
+                    <circle cx="162" cy="108" r="3" fill="white"/>
+                    
+                    <!-- Nose -->
+                    <ellipse cx="140" cy="150" rx="6" ry="5" fill="#d4516f"/>
+                    
+                    <!-- Mouth -->
+                    <path d="M 140 150 Q 135 160 130 158" stroke="#d4516f" stroke-width="2" fill="none" stroke-linecap="round"/>
+                    <path d="M 140 150 Q 145 160 150 158" stroke="#d4516f" stroke-width="2" fill="none" stroke-linecap="round"/>
+                    
+                    <!-- Body -->
+                    <ellipse cx="140" cy="220" rx="50" ry="45" fill="#fcc5a3" stroke="#d4516f" stroke-width="2"/>
+                    
+                    <!-- Front Paws -->
+                    <ellipse cx="115" cy="255" rx="12" ry="20" fill="#fcc5a3" stroke="#d4516f" stroke-width="1.5"/>
+                    <ellipse cx="165" cy="255" rx="12" ry="20" fill="#fcc5a3" stroke="#d4516f" stroke-width="1.5"/>
+                </svg>
+                <div class="mailbox" onclick="askForName()">📬</div>
+            </div>
+            <h1 class="intro-title" id="introTitle">Click the box!</h1>
+        </div>
+    </div>
+
+    <!-- PERSONAL MESSAGE SCREEN -->
+    <div id="message" class="screen">
+        <div class="message-container">
+            <div class="message-card">
+                <div class="message-name" id="messageName"></div>
+                <p class="message-text" id="messageText"></p>
+            </div>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="goToPostcards()">Things i like about you</button>
+                <button class="btn btn-secondary" onclick="goToIntro()">← Back</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- POSTCARDS SCREEN -->
+    <div id="postcards" class="screen">
+        <div class="postcards-header">
+            <h1 class="postcards-title" id="postcardsTitle">Things I love about you</h1>
+            <p class="postcards-subtitle">Click a postcard to reveal the message</p>
+        </div>
+        <div class="postcards-grid" id="postcardsGrid"></div>
+        <div class="postcards-buttons">
+            <button class="btn btn-secondary" onclick="goToIntro()">← Back</button>
+            <button class="btn btn-primary" onclick="loadNewQualities()">See Different Qualities</button>
+        </div>
+    </div>
+
+    <script>
+        const allQualities = [
+            "You light up the room",
+            "Your laugh is contagious",
+            "You're genuinely kind",
+            "You inspire others",
+            "Your creativity knows no bounds",
+            "You're an amazing listener",
+            "You make everything fun",
+            "Your optimism is infectious",
+            "You're fiercely loyal",
+            "You have the biggest heart",
+            "You're incredibly thoughtful",
+            "You bring out the best in people",
+            "Your passion is beautiful",
+            "You're one of a kind",
+            "You make the world brighter",
+            "You're braver than you believe",
+            "Your talent is remarkable",
+            "You're a true friend",
+            "You have impeccable taste",
+            "You're absolutely unforgettable",
+        ];
+
+        const qualityDetails = {
+            "You light up the room": {
+                emoji: "✨",
+                message: "Your presence brings joy and brightness to every space. People naturally gravitate towards you because you make them feel happier just by being there.",
+            },
+            "Your laugh is contagious": {
+                emoji: "😄",
+                message: "Your laughter is infectious and brings genuine happiness to everyone around you. It's one of the most beautiful sounds.",
+            },
+            "You're genuinely kind": {
+                emoji: "💝",
+                message: "Your kindness comes from a real place. You care deeply about others' feelings and always show compassion in everything you do.",
+            },
+            "You inspire others": {
+                emoji: "🚀",
+                message: "The way you pursue your dreams and live your life inspires me to be better. You show others what's possible.",
+            },
+            "Your creativity knows no bounds": {
+                emoji: "🎨",
+                message: "Your creative mind sees possibilities where others see limits. The unique ideas and perspective you bring are truly remarkable.",
+            },
+            "You're an amazing listener": {
+                emoji: "👂",
+                message: "You have this gift of making people feel heard and understood. Your empathy and attention are truly precious.",
+            },
+            "You make everything fun": {
+                emoji: "🎉",
+                message: "Even ordinary moments become adventures when you're around. You have this magical ability to bring fun and laughter to anything.",
+            },
+            "Your optimism is infectious": {
+                emoji: "☀️",
+                message: "In tough times, your positive outlook lifts everyone up. Your belief in better days ahead is inspiring.",
+            },
+            "You're fiercely loyal": {
+                emoji: "🦁",
+                message: "Your loyalty is unwavering. You stand by the people you care about no matter what, and that's incredibly rare.",
+            },
+            "You have the biggest heart": {
+                emoji: "❤️",
+                message: "Your compassion and generosity know no bounds. The way you love and care for people is truly beautiful.",
+            },
+            "You're incredibly thoughtful": {
+                emoji: "🤔",
+                message: "You remember the little things and go out of your way to show people they matter. Your thoughtfulness is deeply appreciated.",
+            },
+            "You bring out the best in people": {
+                emoji: "⭐",
+                message: "Being around you makes people want to be the best version of themselves. That's a special gift.",
+            },
+            "Your passion is beautiful": {
+                emoji: "🔥",
+                message: "The way you pursue what you love with such intensity and authenticity is truly inspiring and beautiful.",
+            },
+            "You're one of a kind": {
+                emoji: "🌈",
+                message: "There's no one quite like you. Your uniqueness and individuality are what make you so special.",
+            },
+            "You make the world brighter": {
+                emoji: "💫",
+                message: "Simply knowing you exist makes the world a better place. Your impact is far greater than you realize.",
+            },
+            "You're braver than you believe": {
+                emoji: "💪",
+                message: "You face challenges with courage even when you doubt yourself. That takes real strength.",
+            },
+            "Your talent is remarkable": {
+                emoji: "🎯",
+                message: "The skills and abilities you have are genuinely impressive. You're so talented at what you do.",
+            },
+            "You're a true friend": {
+                emoji: "🤝",
+                message: "Friendship means something real to you. You show up, care deeply, and make others feel valued.",
+            },
+            "You have impeccable taste": {
+                emoji: "👑",
+                message: "Whether it's in style, music, or just how you live your life, your taste is refined and beautiful.",
+            },
+            "You're absolutely unforgettable": {
+                emoji: "💌",
+                message: "Once someone meets you, they never forget you. You leave a lasting, positive impression wherever you go.",
+            },
+        };
+
+        const personalMessages = {
+            default: (name) => `Thank you for being in my life ${name}. I really love you and care about you. Your friendship is the best thing I get in my entire life. You bring so much joy and meaning to my world, and I'm grateful every single day for you.`,
+        };
+
+        let currentName = "";
+        let selectedQualities = [];
+
+        function askForName() {
+            const name = prompt("Enter your name:");
+            if (name && name.trim()) {
+                currentName = name.trim();
+                showScreen("message");
+                displayPersonalMessage(currentName);
+            }
+        }
+
+        function getPersonalMessage(name) {
+            return personalMessages.default(name);
+        }
+
+        function displayPersonalMessage(name) {
+            const nameEl = document.getElementById("messageName");
+            const messageEl = document.getElementById("messageText");
+            const fullMessage = getPersonalMessage(name);
+            
+            nameEl.textContent = name;
+            messageEl.textContent = "";
+            
+            // Type message character by character
+            let charIndex = 0;
+            const typingSpeed = 30;
+            
+            function typeMessage() {
+                if (charIndex < fullMessage.length) {
+                    messageEl.textContent += fullMessage[charIndex];
+                    charIndex++;
+                    setTimeout(typeMessage, typingSpeed);
+                }
+            }
+            
+            typeMessage();
+            document.getElementById("postcardsTitle").textContent = `Things I love about ${name}`;
+        }
+
+        function selectRandomQualities() {
+            const shuffled = [...allQualities].sort(() => Math.random() - 0.5);
+            return shuffled.slice(0, 6);
+        }
+
+        function goToPostcards() {
+            selectedQualities = selectRandomQualities();
+            showScreen("postcards");
+            renderPostcards();
+        }
+
+        function loadNewQualities() {
+            selectedQualities = selectRandomQualities();
+            renderPostcards();
+        }
+
+        function renderPostcards() {
+            const grid = document.getElementById("postcardsGrid");
+            grid.innerHTML = "";
+            selectedQualities.forEach((quality, index) => {
+                const details = qualityDetails[quality];
+                const postcard = document.createElement("div");
+                postcard.className = `postcard card-${index + 1}`;
+                postcard.innerHTML = `
+                    <div class="postcard-inner">
+                        <div class="postcard-face postcard-front">
+                            <div class="postcard-emoji">${details.emoji}</div>
+                            <div class="postcard-quality">${quality}</div>
+                            <div class="postcard-stamp">💌</div>
+                        </div>
+                        <div class="postcard-face postcard-back">
+                            <div class="postcard-stamp-back">💝</div>
+                            <p class="postcard-message">${details.message}</p>
+                        </div>
+                    </div>
+                `;
+                postcard.onclick = () => postcard.classList.toggle("flipped");
+                grid.appendChild(postcard);
+            });
+        }
+
+        function showScreen(screenName) {
+            document.querySelectorAll(".screen").forEach(screen => {
+                screen.classList.remove("active");
+            });
+            document.getElementById(screenName).classList.add("active");
+        }
+    </script>
+</body>
+</html>
